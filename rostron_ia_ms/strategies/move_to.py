@@ -14,9 +14,9 @@ class MoveTo(Strategies):
         self.world.ball_
         msg = PoseStamped()
         msg.header.frame_id = 'map'
-        msg.pose.position.x = self.world.ball_.position.x
-        msg.pose.position.y = self.world.ball_.position.y
-        msg.pose.orientation = self.yaw_to_quaternion(0.0)
+        msg.pose.position.x = 0.0
+        msg.pose.position.y = 0.0
+        msg.pose.orientation = self.euler_to_quaternion(0.0, 0.0, 0.0)
         self.goTo.publish(msg)
         
         return True

@@ -36,7 +36,7 @@ class TestStrategie(Node):
 
         p = Point()
         self.strategy_1 = MoveTo(
-            robot_id=0, position=p, orientation=0.0, node=self)
+            robot_id=0, position=p, orientation=3.14, node=self)
 
     def callback(self):
         while self.strategy_1.update():

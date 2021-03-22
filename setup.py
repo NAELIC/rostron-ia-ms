@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'ia_ms'
+package_name = 'rostron_ia_ms'
 
 setup(
     name=package_name,
@@ -21,7 +21,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'test_strategie = ia_ms.main:main'
+            'test_strategie = rostron_ia_ms.main:main'
         ],
     },
 )
