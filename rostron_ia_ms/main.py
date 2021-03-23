@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from rostron_interfaces.msg import Robots, Ball
+from rostron_interfaces.msg import Robots, Ball, Referee
 
 from .utils.world import World
 
@@ -17,21 +17,27 @@ class TestStrategie(Node):
             'team').get_parameter_value().string_value
         self.timer_ = self.create_timer(3, self.callback)
 
-        self.subscription = self.create_subscription(
+        self.create_subscription(
             Robots,
             '/%s/allies' % self.team_,
             World().update_allies,
             10)
-
-        self.subscription = self.create_subscription(
+        self.create_subscription(
             Robots,
             '/%s/opponents' % self.team_,
             World().update_opponents,
             10)
-        self.subscription = self.create_subscription(
+        
+        self.create_subscription(
             Ball,
             '/%s/ball' % self.team_,
             World().update_ball,
+            10)
+
+        self.create_subscription(
+            Referee,
+            '/%s/gc' % self.team_,
+            World().update_gc,
             10)
 
         p = Point()

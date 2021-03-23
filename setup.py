@@ -6,7 +6,8 @@ setup(
     name=package_name,
     version='0.0.0',
     packages=[package_name, package_name +
-              '/utils', package_name + '/strategies'],
+              '/utils', package_name + '/strategies',
+              package_name + '/managers'],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -21,7 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'test_strategie = rostron_ia_ms.main:main'
+            'test_strategie = rostron_ia_ms.main:main',
+            'dummy = rostron_ia_ms.managers.dummy:main'
         ],
     },
 )
