@@ -6,7 +6,7 @@ from rostron_ia_ms.utils.world import World
 
 class Manager(Node):
     def __init__(self, name: str):
-        super().__init__(name + 'manager')
+        super().__init__(name + '_manager')
 
         self.declare_parameter('team', 'yellow')
         self.team_ = self.get_parameter(

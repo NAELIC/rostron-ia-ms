@@ -1,6 +1,6 @@
 from rostron_interfaces.msg import Robots, Ball, Referee
 from rclpy.node import Node
-
+from rclpy.subscription import Subscription
 
 class SingletonMeta(type):
     """
@@ -23,41 +23,56 @@ class SingletonMeta(type):
 
 
 class World(metaclass=SingletonMeta):
+    node_ : Node = None
+    gc: Referee = None
+    ball: Ball = None
+    allies = []
+    opponents = []
+
+    p_ball_: Subscription = None
+    p_allies_: Subscription = None
+    p_opponents_: Subscription = None
+    p_gc_: Subscription = None
+
+    
     def init(self, node: Node, team : str):
         self.node_ = node
 
-        node.create_subscription(
+        # Robots
+        self.p_allies_ = node.create_subscription(
             Robots,
             '/%s/allies' % team,
-            World().update_allies,
+            self.update_allies,
             10)
-        node.create_subscription(
+        self.p_opponents_ = node.create_subscription(
             Robots,
             '/%s/opponents' % team,
-            World().update_opponents,
+            self.update_opponents,
             10)
 
-        node.create_subscription(
+        # Ball
+        self.p_ball_ = node.create_subscription(
             Ball,
             '/%s/ball' % team,
-            World().update_ball,
+            self.update_ball,
             10)
 
-        node.create_subscription(
+        # GameController
+        self.p_gc_ = node.create_subscription(
             Referee,
             '/%s/gc' % team,
-            World().update_gc,
+            self.update_gc,
             10)
-
+    
     def update_allies(self, msg: Robots):
-        self.allies_ = msg.robots
+        self.allies = msg.robots
 
     def update_opponents(self, msg: Robots):
-        self.allies_ = msg.robots
+        self.opponents = msg.robots
 
     def update_ball(self, msg: Ball):
-        self.ball_ = msg
+        self.ball = msg
 
     def update_gc(self, msg: Referee):
-        self.node_.get_logger().info('receive gc')
-        self.gc_ = msg
+        self.gc = msg
+
