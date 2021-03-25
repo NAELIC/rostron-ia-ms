@@ -15,8 +15,9 @@ class Manual(Manager):
     def update(self):
         # World._gc.sel
         while len(self.strategies) > 0:
-            for str in self.strategies:
-                str.update()
+            for num, strategie in enumerate(self.strategies):
+                if strategie.update():
+                    self.strategies.pop(num)
 
 
 def main(args=None):
