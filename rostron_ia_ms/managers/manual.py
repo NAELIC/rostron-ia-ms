@@ -7,16 +7,21 @@ from rostron_ia_ms.strategies.go_to_ball import GoToBall
 
 class Manual(Manager):
     def __init__(self):
-        super().__init__('dummy')
-        World().init(self, self.team_)
+        super().__init__('manual')
         self.timer_ = self.create_timer(0.16, self.update)
         self.strategies = [GoToBall(0)]
 
     def update(self):
-        while len(self.strategies) > 0:
-            for num, strategie in enumerate(self.strategies):
-                if strategie.update():
-                    self.strategies.pop(num)
+        if not(World().ready()):
+            self.get_logger().info('[WAITING] : All main topic not receive')
+            return 
+
+        for num, strategie in enumerate(self.strategies):
+            if strategie.update():
+                self.strategies.pop(num)
+
+        # if len(self.strategies) == 0:
+        #     self.destroy_node()
 
 
 def main(args=None):

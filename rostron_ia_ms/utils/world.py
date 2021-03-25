@@ -1,6 +1,8 @@
 from rostron_interfaces.msg import Robots, Ball, Referee
 from rclpy.node import Node
 from rclpy.subscription import Subscription
+import rclpy
+
 
 class SingletonMeta(type):
     """
@@ -23,19 +25,20 @@ class SingletonMeta(type):
 
 
 class World(metaclass=SingletonMeta):
-    node_ : Node = None
+    node_: Node = None
     gc: Referee = None
     ball: Ball = None
     allies = []
     opponents = []
+
+    receive_first = [False] * 4
 
     p_ball_: Subscription = None
     p_allies_: Subscription = None
     p_opponents_: Subscription = None
     p_gc_: Subscription = None
 
-    
-    def init(self, node: Node, team : str):
+    def init(self, node: Node, team: str):
         self.node_ = node
 
         # Robots
@@ -44,6 +47,7 @@ class World(metaclass=SingletonMeta):
             '/%s/allies' % team,
             self.update_allies,
             10)
+
         self.p_opponents_ = node.create_subscription(
             Robots,
             '/%s/opponents' % team,
@@ -63,7 +67,7 @@ class World(metaclass=SingletonMeta):
             '/%s/gc' % team,
             self.update_gc,
             10)
-    
+
     def update_allies(self, msg: Robots):
         self.allies = msg.robots
 
@@ -76,3 +80,5 @@ class World(metaclass=SingletonMeta):
     def update_gc(self, msg: Referee):
         self.gc = msg
 
+    def ready(self):
+        return len(self.allies) > 0 and len(self.opponents) > 0 and self.ball is not None

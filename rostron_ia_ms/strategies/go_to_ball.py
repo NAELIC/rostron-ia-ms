@@ -20,10 +20,6 @@ class GoToBall(Strategies):
         self.goTo.publish(msg)
 
     def update(self):
-        # TODO : Remove this !
-        if World().ball.position:
-            self.order_robot(World().ball.position.x, World().ball.position.x, 0)
-            # print("test")
-            return True
-        else:
-            return False
+        self.order_robot(World().ball.position.x,
+                         World().ball.position.y, 0)
+        return True
