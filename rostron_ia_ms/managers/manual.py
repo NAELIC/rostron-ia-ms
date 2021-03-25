@@ -13,7 +13,6 @@ class Manual(Manager):
         self.strategies = [GoToBall(0)]
 
     def update(self):
-        # World._gc.sel
         while len(self.strategies) > 0:
             for num, strategie in enumerate(self.strategies):
                 if strategie.update():
