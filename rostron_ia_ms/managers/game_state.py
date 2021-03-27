@@ -32,6 +32,8 @@ class State(Enum):
     NORMAL_START = 5
     FORCE_START = 6
     RUNNING = 7
+    PENALTY_ALLY = 8
+    PENALTY_OPPONENT = 9
 
 class GameStateManager(ABC, Manager):
     last_gc_receive = None
@@ -71,6 +73,10 @@ class GameStateManager(ABC, Manager):
             self.stop_force_start()
         elif self.internal_state_ == State.RUNNING:
             self.stop_running()
+        elif self.internal_state_ == State.PENALTY_ALLY:
+            self.stop_penalty_ally()
+        elif self.internal_state_ == State.PENALTY_OPPONENT:
+            self.stop_penalty_opponent()
 
     def update_state(self):
         if World().gc.command == Command.HALT:
@@ -105,6 +111,22 @@ class GameStateManager(ABC, Manager):
             self.get_logger().info('State changed : NORMAL_START')
             self.internal_state_ == State.NORMAL_START
             self.start_force_start()
+        elif World().gc.command == Command.PREPARE_PENALTY_BLUE:
+            self.get_logger().info('State changed : PREPARE_PENALTY_BLUE')
+            if self.is_yellow:
+                self.internal_state_ == State.PENALTY_OPPONENT
+                self.start_penalty_opponent()
+            else:
+                self.internal_state_ == State.PENALTY_ALLY
+                self.start_penalty_ally()
+        elif World().gc.command == Command.PREPARE_PENALTY_YELLOW:
+            self.get_logger().info('State changed : PREPARE_PENALTY_YELLOW')
+            if self.is_yellow:
+                self.internal_state_ == State.PENALTY_ALLY
+                self.start_penalty_ally()
+            else:
+                self.internal_state_ == State.PENALTY_OPPONENT
+                self.start_penalty_opponent()
 
     def callback_state(self):
         if self.internal_state_ == State.HALT:
@@ -119,6 +141,10 @@ class GameStateManager(ABC, Manager):
             self.force_start()
         elif self.internal_state_ == State.RUNNING:
             self.running()
+        elif self.internal_state_ == State.PENALTY_ALLY:
+            self.penalty_ally()
+        elif self.internal_state_ == State.PENALTY_OPPONENT:
+            self.penalty_opponent()
 
     # This methods behind needs to be implemented for a match
 
@@ -180,6 +206,36 @@ class GameStateManager(ABC, Manager):
 
     @abstractmethod
     def stop_kickoff_ally(self):
+        pass
+
+     ################################################
+    #               PENALTY OPPONENT               #
+    ################################################
+    @abstractmethod
+    def start_penalty_opponent(self):
+        pass
+
+    @abstractmethod
+    def penalty_opponent(self):
+        pass
+
+    @abstractmethod
+    def stop_penalty_opponent(self):
+        pass
+
+    ################################################
+    #                 PENALTY ALLY                 #
+    ################################################
+    @abstractmethod
+    def start_penalty_ally(self):
+        pass
+
+    @abstractmethod
+    def penalty_ally(self):
+        pass
+
+    @abstractmethod
+    def stop_penalty_ally(self):
         pass
 
     ################################################
