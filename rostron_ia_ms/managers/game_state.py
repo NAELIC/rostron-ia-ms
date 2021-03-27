@@ -65,7 +65,12 @@ class GameStateManager(ABC, Manager):
             self.stop_kickoff_ally()
         elif self.internal_state_ == State.KICKOFF_OPPONENT:
             self.stop_kickoff_opponent()
-        
+        elif self.internal_state_ == State.NORMAL_START:
+            self.stop_normal_start()
+        elif self.internal_state_ == State.FORCE_START:
+            self.stop_force_start()
+        elif self.internal_state_ == State.RUNNING:
+            self.stop_running()
 
     def update_state(self):
         if World().gc.command == Command.HALT:
@@ -93,7 +98,13 @@ class GameStateManager(ABC, Manager):
                 self.internal_state_ == State.KICKOFF_OPPONENT
                 self.start_kickoff_opponent()
         elif World().gc.command == Command.NORMAL_START:
+            self.get_logger().info('State changed : NORMAL_START')
             self.internal_state_ == State.NORMAL_START
+            self.start_normal_start()
+        elif World().gc.command == Command.FORCE_START:
+            self.get_logger().info('State changed : NORMAL_START')
+            self.internal_state_ == State.NORMAL_START
+            self.start_force_start()
 
     def callback_state(self):
         if self.internal_state_ == State.HALT:
@@ -104,6 +115,10 @@ class GameStateManager(ABC, Manager):
             self.kickoff_ally()
         elif self.internal_state_ == State.KICKOFF_OPPONENT:
             self.kickoff_opponent()
+        elif self.internal_state_ == State.FORCE_START:
+            self.force_start()
+        elif self.internal_state_ == State.RUNNING:
+            self.running()
 
     # This methods behind needs to be implemented for a match
 
@@ -165,4 +180,49 @@ class GameStateManager(ABC, Manager):
 
     @abstractmethod
     def stop_kickoff_ally(self):
+        pass
+
+    ################################################
+    #                NORMAL START                 #
+    ################################################
+    @abstractmethod
+    def start_normal_start(self):
+        pass
+
+    @abstractmethod
+    def normal_start(self):
+        pass
+
+    @abstractmethod
+    def stop_normal_start(self):
+        pass
+
+    ################################################
+    #                 FORCE START                  #
+    ################################################
+    @abstractmethod
+    def start_force_start(self):
+        pass
+
+    @abstractmethod
+    def force_start(self):
+        pass
+
+    @abstractmethod
+    def stop_force_start(self):
+        pass
+
+    ################################################
+    #                   RUNNING                    #
+    ################################################
+    @abstractmethod
+    def start_running(self):
+        pass
+
+    @abstractmethod
+    def running(self):
+        pass
+
+    @abstractmethod
+    def stop_running(self):
         pass
