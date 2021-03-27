@@ -34,13 +34,19 @@ class State(Enum):
     RUNNING = 7
     PENALTY_ALLY = 8
     PENALTY_OPPONENT = 9
-
+    DIRECT_FREE_ALLY = 10
+    DIRECT_FREE_OPPONENT = 11
+    INDIRECT_FREE_ALLY = 12
+    INDIRECT_FREE_OPPONENT = 13
+    TIMEOUT = 14
+    
 class GameStateManager(ABC, Manager):
     last_gc_receive = None
-    internal_state_ = None
+    internal_state_ = State.HALT
 
     def __init__(self, name: str):
         super().__init__(name)
+        self.start_halt()
 
     def state_change(self) -> bool:
         '''
@@ -77,6 +83,18 @@ class GameStateManager(ABC, Manager):
             self.stop_penalty_ally()
         elif self.internal_state_ == State.PENALTY_OPPONENT:
             self.stop_penalty_opponent()
+        elif self.internal_state_ == State.DIRECT_FREE_ALLY:
+            self.stop_direct_free_ally()
+        elif self.internal_state_ == State.DIRECT_FREE_OPPONENT:
+            self.stop_direct_free_opponent()
+        elif self.internal_state_ == State.INDIRECT_FREE_ALLY:
+            self.stop_indirect_free_ally()
+        elif self.internal_state_ == State.INDIRECT_FREE_OPPONENT:
+            self.stop_indirect_free_opponent()
+        elif self.internal_state_ == State.TIMEOUT:
+            self.stop_timeout()
+        else:
+            self.get_logger().warn('[STOP] Command not implemented')
 
     def update_state(self):
         if World().gc.command == Command.HALT:
@@ -108,7 +126,7 @@ class GameStateManager(ABC, Manager):
             self.internal_state_ == State.NORMAL_START
             self.start_normal_start()
         elif World().gc.command == Command.FORCE_START:
-            self.get_logger().info('State changed : NORMAL_START')
+            self.get_logger().info('State changed : FORCE_START')
             self.internal_state_ == State.NORMAL_START
             self.start_force_start()
         elif World().gc.command == Command.PREPARE_PENALTY_BLUE:
@@ -127,6 +145,41 @@ class GameStateManager(ABC, Manager):
             else:
                 self.internal_state_ == State.PENALTY_OPPONENT
                 self.start_penalty_opponent()
+        elif World().gc.command == Command.DIRECT_FREE_BLUE:
+            self.get_logger().info('State changed : DIRECT_FREE_BLUE')
+            if self.is_yellow:
+                self.internal_state_ == State.DIRECT_FREE_OPPONENT
+                self.start_direct_free_opponent()
+            else:
+                self.internal_state_ == State.DIRECT_FREE_ALLY
+                self.start_direct_free_ally()
+        elif World().gc.command == Command.DIRECT_FREE_YELLOW:
+            self.get_logger().info('State changed : DIRECT_FREE_YELLOW')
+            if self.is_yellow:
+                self.internal_state_ == State.DIRECT_FREE_ALLY
+                self.start_direct_free_ally()
+            else:
+                self.internal_state_ == State.DIRECT_FREE_OPPONENT
+                self.start_direct_free_opponent()
+        elif World().gc.command == Command.INDIRECT_FREE_BLUE:
+            self.get_logger().info('State changed : INDIRECT_FREE_BLUE')
+            if self.is_yellow:
+                self.internal_state_ == State.INDIRECT_FREE_OPPONENT
+                self.start_indirect_free_opponent()
+            else:
+                self.internal_state_ == State.INDIRECT_FREE_ALLY
+                self.start_indirect_free_ally()
+        elif World().gc.command == Command.INDIRECT_FREE_YELLOW:
+            self.get_logger().info('State changed : INDIRECT_FREE_YELLOW')
+            if self.is_yellow:
+                self.internal_state_ == State.INDIRECT_FREE_ALLY
+                self.start_indirect_free_ally()
+            else:
+                self.internal_state_ == State.INDIRECT_FREE_OPPONENT
+                self.start_indirect_free_opponent()
+        elif World().gc.command == Command.TIMEOUT_BLUE or World().gc.command == Command.TIMEOUT_YELLOW:
+            self.internal_state_ = State.TIMEOUT
+            self.start_timeout() 
 
     def callback_state(self):
         if self.internal_state_ == State.HALT:
@@ -145,6 +198,18 @@ class GameStateManager(ABC, Manager):
             self.penalty_ally()
         elif self.internal_state_ == State.PENALTY_OPPONENT:
             self.penalty_opponent()
+        elif self.internal_state_ == State.DIRECT_FREE_ALLY:
+            self.direct_free_ally()
+        elif self.internal_state_ == State.DIRECT_FREE_OPPONENT:
+            self.direct_free_opponent()
+        elif self.internal_state_ == State.INDIRECT_FREE_ALLY:
+            self.indirect_free_ally()
+        elif self.internal_state_ == State.INDIRECT_FREE_OPPONENT:
+            self.indirect_free_opponent()
+        elif self.internal_state_ == State.TIMEOUT:
+            self.timeout()
+        else:
+            self.get_logger().warn('[STOP] Command not implemented')
 
     # This methods behind needs to be implemented for a match
 
@@ -208,7 +273,7 @@ class GameStateManager(ABC, Manager):
     def stop_kickoff_ally(self):
         pass
 
-     ################################################
+    ################################################
     #               PENALTY OPPONENT               #
     ################################################
     @abstractmethod
@@ -281,4 +346,79 @@ class GameStateManager(ABC, Manager):
 
     @abstractmethod
     def stop_running(self):
+        pass
+    
+    ################################################
+    #               DIRECT FREE ALLY               #
+    ################################################
+    @abstractmethod
+    def start_direct_free_ally(self):
+        pass
+
+    @abstractmethod
+    def direct_free_ally(self):
+        pass
+
+    @abstractmethod
+    def stop_direct_free_ally(self):
+        pass
+
+    ################################################
+    #             DIRECT FREE OPPONENT             #
+    ################################################
+    @abstractmethod
+    def start_direct_free_opponent(self):
+        pass
+
+    @abstractmethod
+    def direct_free_opponent(self):
+        pass
+
+    @abstractmethod
+    def stop_direct_free_opponent(self):
+        pass
+
+    ################################################
+    #               INDIRECT FREE ALLY             #
+    ################################################
+    @abstractmethod
+    def start_indirect_free_ally(self):
+        pass
+
+    @abstractmethod
+    def indirect_free_ally(self):
+        pass
+
+    @abstractmethod
+    def stop_indirect_free_ally(self):
+        pass
+
+    ################################################
+    #              INDIRECT FREE OPPONENT          #
+    ################################################
+    @abstractmethod
+    def start_indirect_free_opponent(self):
+        pass
+
+    @abstractmethod
+    def indirect_free_opponent(self):
+        pass
+
+    @abstractmethod
+    def stop_indirect_free_opponent(self):
+        pass
+
+    ################################################
+    #                   TIMEOUT                    #
+    ################################################
+    @abstractmethod
+    def start_timeout(self):
+        pass
+
+    @abstractmethod
+    def timeout(self):
+        pass
+
+    @abstractmethod
+    def stop_timeout(self):
         pass
