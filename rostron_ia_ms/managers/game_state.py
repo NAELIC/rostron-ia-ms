@@ -39,7 +39,8 @@ class State(Enum):
     INDIRECT_FREE_ALLY = 12
     INDIRECT_FREE_OPPONENT = 13
     TIMEOUT = 14
-    
+
+
 class GameStateManager(ABC, Manager):
     last_gc_receive = None
     internal_state_ = State.HALT
@@ -179,7 +180,9 @@ class GameStateManager(ABC, Manager):
                 self.start_indirect_free_opponent()
         elif World().gc.command == Command.TIMEOUT_BLUE or World().gc.command == Command.TIMEOUT_YELLOW:
             self.internal_state_ = State.TIMEOUT
-            self.start_timeout() 
+            self.start_timeout()
+        else:
+            self.get_logger().warn('[START] Command not implemented')
 
     def callback_state(self):
         if self.internal_state_ == State.HALT:
@@ -209,7 +212,7 @@ class GameStateManager(ABC, Manager):
         elif self.internal_state_ == State.TIMEOUT:
             self.timeout()
         else:
-            self.get_logger().warn('[STOP] Command not implemented')
+            self.get_logger().warn('[CALLBACK] Command not implemented')
 
     # This methods behind needs to be implemented for a match
 
@@ -347,7 +350,7 @@ class GameStateManager(ABC, Manager):
     @abstractmethod
     def stop_running(self):
         pass
-    
+
     ################################################
     #               DIRECT FREE ALLY               #
     ################################################
