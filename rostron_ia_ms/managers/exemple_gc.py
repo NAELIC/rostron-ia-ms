@@ -6,7 +6,12 @@ from .game_state import GameStateManager
 class ExempleGC(GameStateManager):
     def __init__(self):
         super().__init__('exemple')
-     ################################################
+        self.timer_ = self.create_timer(0.16, self.update)
+
+    def update(self):
+        super().update()
+
+    ################################################
     #                    HALT                      #
     ################################################
 
