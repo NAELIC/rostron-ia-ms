@@ -17,8 +17,3 @@ class Manager(Node):
             'yellow').get_parameter_value().bool_value
 
         World().init(self)
-
-    def update(self):
-        if not(World().ready()):
-            self.get_logger().info('[WAITING] : All main topic not receive')
-            return

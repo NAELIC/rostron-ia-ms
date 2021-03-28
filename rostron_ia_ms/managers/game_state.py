@@ -60,7 +60,10 @@ class GameStateManager(Manager, ABC):
             return True
 
     def update(self):
-        super().update()
+        if not(World().ready()):
+            self.get_logger().info('[WAITING] : All main topic not receive')
+            return
+
         if self.state_change():
             self.callback_stop()
             self.update_state()

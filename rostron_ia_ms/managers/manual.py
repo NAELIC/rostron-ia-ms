@@ -12,7 +12,9 @@ class Manual(Manager):
         self.strategies = [GoToBall(0)]
 
     def update(self):
-        super().update()
+        if not(World().ready()):
+            self.get_logger().info('[WAITING] : All main topic not receive')
+            return
 
         for num, strategie in enumerate(self.strategies):
             if strategie.update():
