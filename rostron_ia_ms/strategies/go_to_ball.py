@@ -3,6 +3,7 @@ from .strategies import Strategies
 from geometry_msgs.msg import Point, PoseStamped
 from rostron_ia_ms.utils.world import World
 
+import math
 
 class GoToBall(Strategies):
 
@@ -14,12 +15,16 @@ class GoToBall(Strategies):
     def order_robot(self, x, y, theta):
         msg = PoseStamped()
         msg.header.frame_id = 'map'
-        msg.pose.position.x = World().ball.position.x
-        msg.pose.position.y = World().ball.position.y
-        msg.pose.orientation = self.yaw_to_quaternion(0.0)
+        if World().on_positive_half:
+            msg.pose.position.x = -x
+            msg.pose.position.y = -y
+            msg.pose.orientation = self.yaw_to_quaternion(
+                math.fmod(theta + math.pi, 2 * math.pi))
         self.goTo.publish(msg)
 
     def update(self):
+        print(World().ball.position.x)
+        print(World().ball.position.y)
         self.order_robot(World().ball.position.x,
                          World().ball.position.y, 0)
-        return True
+        return False

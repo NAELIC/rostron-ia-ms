@@ -11,4 +11,9 @@ class Manager(Node):
         self.declare_parameter('team', 'yellow')
         self.team_ = self.get_parameter(
             'team').get_parameter_value().string_value
-        World().init(self, self.team_)
+
+        self.declare_parameter('yellow', True)
+        self.is_yellow = self.get_parameter(
+            'yellow').get_parameter_value().bool_value
+
+        World().init(self, self.is_yellow)

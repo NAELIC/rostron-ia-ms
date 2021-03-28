@@ -15,7 +15,7 @@ class Manual(Manager):
     def update(self):
         if not(World().ready()):
             self.get_logger().info('[WAITING] : All main topic not receive')
-            return 
+            return
 
         for num, strategie in enumerate(self.strategies):
             if strategie.update():
