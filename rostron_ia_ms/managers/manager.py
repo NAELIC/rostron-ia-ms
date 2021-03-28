@@ -16,4 +16,4 @@ class Manager(Node):
         self.is_yellow = self.get_parameter(
             'yellow').get_parameter_value().bool_value
 
-        World().init(self)
+        World().init(self, self.is_yellow)
