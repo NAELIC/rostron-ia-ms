@@ -95,95 +95,95 @@ class GameStateManager(ABC, Manager):
         elif self.internal_state_ == State.TIMEOUT:
             self.stop_timeout()
         else:
-            self.get_logger().warn('[STOP] Command not implemented')
+            self.get_logger().warn('[STOP] Command not implemented : %d' % self.internal_state_)
 
     def update_state(self):
-        if World().gc.command == Command.HALT:
+        if World().gc.command == Command.HALT.value:
             self.get_logger().info('State changed : HALT')
-            self.internal_state_ == State.HALT
+            self.internal_state_ = State.HALT
             self.start_halt()
-        elif World().gc.command == Command.STOP:
+        elif World().gc.command == Command.STOP.value:
             self.get_logger().info('State changed : STOP')
-            self.internal_state_ == State.STOP
+            self.internal_state_ = State.STOP
             self.start_stop()
-        elif World().gc.command == Command.PREPARE_KICKOFF_BLUE:
+        elif World().gc.command == Command.PREPARE_KICKOFF_BLUE.value:
             self.get_logger().info('State changed : PREPARE_KICKOFF_BLUE')
             if self.is_yellow:
-                self.internal_state_ == State.KICKOFF_OPPONENT
+                self.internal_state_ = State.KICKOFF_OPPONENT
                 self.start_kickoff_opponent()
             else:
                 self.internal_state_ == State.KICKOFF_ALLY
                 self.start_kickoff_ally()
-        elif World().gc.command == Command.PREPARE_KICKOFF_YELLOW:
+        elif World().gc.command == Command.PREPARE_KICKOFF_YELLOW.value:
             self.get_logger().info('State changed : PREPARE_KICKOFF_YELLOW')
             if self.is_yellow:
-                self.internal_state_ == State.KICKOFF_ALLY
+                self.internal_state_ = State.KICKOFF_ALLY
                 self.start_kickoff_ally()
             else:
                 self.internal_state_ == State.KICKOFF_OPPONENT
                 self.start_kickoff_opponent()
-        elif World().gc.command == Command.NORMAL_START:
+        elif World().gc.command == Command.NORMAL_START.value:
             self.get_logger().info('State changed : NORMAL_START')
-            self.internal_state_ == State.NORMAL_START
+            self.internal_state_ = State.NORMAL_START
             self.start_normal_start()
-        elif World().gc.command == Command.FORCE_START:
+        elif World().gc.command == Command.FORCE_START.value:
             self.get_logger().info('State changed : FORCE_START')
-            self.internal_state_ == State.NORMAL_START
+            self.internal_state_ = State.NORMAL_START
             self.start_force_start()
-        elif World().gc.command == Command.PREPARE_PENALTY_BLUE:
+        elif World().gc.command == Command.PREPARE_PENALTY_BLUE.value:
             self.get_logger().info('State changed : PREPARE_PENALTY_BLUE')
             if self.is_yellow:
-                self.internal_state_ == State.PENALTY_OPPONENT
+                self.internal_state_ = State.PENALTY_OPPONENT
                 self.start_penalty_opponent()
             else:
-                self.internal_state_ == State.PENALTY_ALLY
+                self.internal_state_ = State.PENALTY_ALLY
                 self.start_penalty_ally()
-        elif World().gc.command == Command.PREPARE_PENALTY_YELLOW:
+        elif World().gc.command == Command.PREPARE_PENALTY_YELLOW.value:
             self.get_logger().info('State changed : PREPARE_PENALTY_YELLOW')
             if self.is_yellow:
-                self.internal_state_ == State.PENALTY_ALLY
+                self.internal_state_ = State.PENALTY_ALLY
                 self.start_penalty_ally()
             else:
-                self.internal_state_ == State.PENALTY_OPPONENT
+                self.internal_state_ = State.PENALTY_OPPONENT
                 self.start_penalty_opponent()
-        elif World().gc.command == Command.DIRECT_FREE_BLUE:
+        elif World().gc.command == Command.DIRECT_FREE_BLUE.value:
             self.get_logger().info('State changed : DIRECT_FREE_BLUE')
             if self.is_yellow:
-                self.internal_state_ == State.DIRECT_FREE_OPPONENT
+                self.internal_state_ = State.DIRECT_FREE_OPPONENT
                 self.start_direct_free_opponent()
             else:
-                self.internal_state_ == State.DIRECT_FREE_ALLY
+                self.internal_state_ = State.DIRECT_FREE_ALLY
                 self.start_direct_free_ally()
-        elif World().gc.command == Command.DIRECT_FREE_YELLOW:
+        elif World().gc.command == Command.DIRECT_FREE_YELLOW.value:
             self.get_logger().info('State changed : DIRECT_FREE_YELLOW')
             if self.is_yellow:
-                self.internal_state_ == State.DIRECT_FREE_ALLY
+                self.internal_state_ = State.DIRECT_FREE_ALLY
                 self.start_direct_free_ally()
             else:
-                self.internal_state_ == State.DIRECT_FREE_OPPONENT
+                self.internal_state_ = State.DIRECT_FREE_OPPONENT
                 self.start_direct_free_opponent()
-        elif World().gc.command == Command.INDIRECT_FREE_BLUE:
+        elif World().gc.command == Command.INDIRECT_FREE_BLUE.value:
             self.get_logger().info('State changed : INDIRECT_FREE_BLUE')
             if self.is_yellow:
-                self.internal_state_ == State.INDIRECT_FREE_OPPONENT
+                self.internal_state_ = State.INDIRECT_FREE_OPPONENT
                 self.start_indirect_free_opponent()
             else:
-                self.internal_state_ == State.INDIRECT_FREE_ALLY
+                self.internal_state_ = State.INDIRECT_FREE_ALLY
                 self.start_indirect_free_ally()
-        elif World().gc.command == Command.INDIRECT_FREE_YELLOW:
+        elif World().gc.command == Command.INDIRECT_FREE_YELLOW.value:
             self.get_logger().info('State changed : INDIRECT_FREE_YELLOW')
             if self.is_yellow:
-                self.internal_state_ == State.INDIRECT_FREE_ALLY
+                self.internal_state_ = State.INDIRECT_FREE_ALLY
                 self.start_indirect_free_ally()
             else:
-                self.internal_state_ == State.INDIRECT_FREE_OPPONENT
+                self.internal_state_ = State.INDIRECT_FREE_OPPONENT
                 self.start_indirect_free_opponent()
-        elif World().gc.command == Command.TIMEOUT_BLUE or World().gc.command == Command.TIMEOUT_YELLOW:
+        elif World().gc.command == Command.TIMEOUT_BLUE.value or World().gc.command == Command.TIMEOUT_YELLOW.value:
             self.internal_state_ = State.TIMEOUT
             self.start_timeout()
         else:
             self.get_logger().warn(
-                '[START] Command not implemented %d' % World().gc.command)
+                '[START] Command not implemented : %d' % World().gc.command)
 
     def callback_state(self):
         if self.internal_state_ == State.HALT:
@@ -194,6 +194,8 @@ class GameStateManager(ABC, Manager):
             self.kickoff_ally()
         elif self.internal_state_ == State.KICKOFF_OPPONENT:
             self.kickoff_opponent()
+        elif self.internal_state_ == State.NORMAL_START:
+            self.normal_start()
         elif self.internal_state_ == State.FORCE_START:
             self.force_start()
         elif self.internal_state_ == State.RUNNING:
@@ -213,7 +215,7 @@ class GameStateManager(ABC, Manager):
         elif self.internal_state_ == State.TIMEOUT:
             self.timeout()
         else:
-            self.get_logger().warn('[CALLBACK] Command not implemented')
+            self.get_logger().warn('[CALLBACK] Command not implemented : %d' % self.internal_state_)
 
     # This methods behind needs to be implemented for a match
 
