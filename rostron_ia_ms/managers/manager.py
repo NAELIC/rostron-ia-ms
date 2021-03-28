@@ -11,9 +11,14 @@ class Manager(Node):
         self.declare_parameter('team', 'yellow')
         self.team_ = self.get_parameter(
             'team').get_parameter_value().string_value
-        
+
         self.declare_parameter('yellow', True)
         self.is_yellow = self.get_parameter(
             'yellow').get_parameter_value().bool_value
 
-        World().init(self, self.team_)
+        World().init(self)
+
+    def update(self):
+        if not(World().ready()):
+            self.get_logger().info('[WAITING] : All main topic not receive')
+            return

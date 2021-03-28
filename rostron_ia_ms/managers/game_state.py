@@ -41,7 +41,7 @@ class State(Enum):
     TIMEOUT = 13
 
 
-class GameStateManager(ABC, Manager):
+class GameStateManager(Manager, ABC):
     last_gc_receive = None
     internal_state_ = State.HALT
 
@@ -60,6 +60,7 @@ class GameStateManager(ABC, Manager):
             return True
 
     def update(self):
+        super().update()
         if self.state_change():
             self.callback_stop()
             self.update_state()
