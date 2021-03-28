@@ -25,20 +25,20 @@ class Command(Enum):
 
 
 class State(Enum):
-    HALT = 1
-    STOP = 2
-    KICKOFF_ALLY = 3
-    KICKOFF_OPPONENT = 4
-    NORMAL_START = 5
-    FORCE_START = 6
-    RUNNING = 7
-    PENALTY_ALLY = 8
-    PENALTY_OPPONENT = 9
-    DIRECT_FREE_ALLY = 10
-    DIRECT_FREE_OPPONENT = 11
-    INDIRECT_FREE_ALLY = 12
-    INDIRECT_FREE_OPPONENT = 13
-    TIMEOUT = 14
+    HALT = 0
+    STOP = 1
+    KICKOFF_ALLY = 2
+    KICKOFF_OPPONENT = 3
+    NORMAL_START = 4
+    FORCE_START = 5
+    RUNNING = 6
+    PENALTY_ALLY = 7
+    PENALTY_OPPONENT = 8
+    DIRECT_FREE_ALLY = 9
+    DIRECT_FREE_OPPONENT = 10
+    INDIRECT_FREE_ALLY = 11
+    INDIRECT_FREE_OPPONENT = 12
+    TIMEOUT = 13
 
 
 class GameStateManager(ABC, Manager):
@@ -53,10 +53,10 @@ class GameStateManager(ABC, Manager):
         '''
             See if the state is changed since the last update.
         '''
-        if self.last_gc_receive is not None and self.last_gc_receive == World().gc.command:
+        if World().gc.command is None or self.last_gc_receive == World().gc.command:
             return False
         else:
-            self.last_gc_receive == World().gc.command
+            self.last_gc_receive = World().gc.command
             return True
 
     def update(self):
@@ -182,7 +182,8 @@ class GameStateManager(ABC, Manager):
             self.internal_state_ = State.TIMEOUT
             self.start_timeout()
         else:
-            self.get_logger().warn('[START] Command not implemented')
+            self.get_logger().warn(
+                '[START] Command not implemented %d' % World().gc.command)
 
     def callback_state(self):
         if self.internal_state_ == State.HALT:
