@@ -24,7 +24,8 @@ setup(
         'console_scripts': [
             'test_strategie = rostron_ia_ms.main:main',
             'dummy = rostron_ia_ms.managers.dummy:main',
-            'manual = rostron_ia_ms.managers.manual:main'
+            'manual = rostron_ia_ms.managers.manual:main',
+            'exemple = rostron_ia_ms.managers.exemple_gc:main'
         ],
     },
 )
