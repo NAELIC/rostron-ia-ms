@@ -3,13 +3,14 @@ import rclpy
 
 from rostron_ia_ms.utils.world import World
 
-from rostron_ia_ms.strategies.go_to_ball import GoToBall
+#from rostron_ia_ms.strategies.go_to_ball import GoToBall
+from rostron_ia_ms.strategies.wall import Wall
 
 class Manual(Manager):
     def __init__(self):
         super().__init__('manual')
         self.timer_ = self.create_timer(0.16, self.update)
-        self.strategies = [GoToBall(0)]
+        self.strategies = [Wall(0)]
 
     def update(self):
         if not(World().ready()):
