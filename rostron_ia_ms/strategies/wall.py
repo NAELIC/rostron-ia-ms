@@ -8,15 +8,16 @@ import numpy as np
 
 class Wall(Strategies):
 
-    def __init__(self, robot_id):
+    def __init__(self, robots_id):
         super().__init__()
         self.goTo1 = World().node_.create_publisher(
-            PoseStamped, 'robot_%d/goal_pose' % robot_id[0], 1)
+            PoseStamped, 'robot_%d/goal_pose' % robots_id[0], 1)
 
-                self.goTo2 = World().node_.create_publisher(
-            PoseStamped, 'robot_%d/goal_pose' % robot_id[1], 1)
-                    self.goTo3 = World().node_.create_publisher(
-            PoseStamped, 'robot_%d/goal_pose' % robot_id[2], 1)
+        self.goTo2 = World().node_.create_publisher(
+            PoseStamped, 'robot_%d/goal_pose' % robots_id[1], 1)
+        
+        self.goTo3 = World().node_.create_publisher(
+            PoseStamped, 'robot_%d/goal_pose' % robots_id[2], 1)
     
         
 
@@ -27,12 +28,14 @@ class Wall(Strategies):
         msg1.pose.position.y = y
         msg1.pose.orientation = self.yaw_to_quaternion(0.0)
         self.goTo1.publish(msg1)
+
         msg2 = PoseStamped()
         msg2.header.frame_id = 'map'
         msg2.pose.position.x = x
         msg2.pose.position.y = y-0.5
         msg2.pose.orientation = self.yaw_to_quaternion(0.0)
         self.goTo2.publish(msg2)
+
         msg3 = PoseStamped()
         msg3.header.frame_id = 'map'
         msg3.pose.position.x = x
