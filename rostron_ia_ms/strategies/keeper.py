@@ -4,7 +4,7 @@ from geometry_msgs.msg import Point, PoseStamped
 from rostron_ia_ms.utils.world import World
 
 import numpy as np
-
+import math
 
 class Keeper(Strategies):
 
@@ -16,9 +16,11 @@ class Keeper(Strategies):
     def order_robot(self, x, y, theta):
         msg = PoseStamped()
         msg.header.frame_id = 'map'
-        msg.pose.position.x = x
-        msg.pose.position.y = y
-        msg.pose.orientation = self.yaw_to_quaternion(0.0)
+        if World().on_positive_half:
+            msg.pose.position.x = -x
+            msg.pose.position.y = -y
+            msg.pose.orientation = self.yaw_to_quaternion(
+                math.fmod(theta + math.pi, 2 * math.pi))
         self.goTo.publish(msg)
 
     def vector2angle(self, v):
@@ -35,7 +37,7 @@ class Keeper(Strategies):
     def update(self):
         ball = np.array((World().ball.position.x, World().ball.position.y))
         robot = np.array((World().allies[0].pose.position.x, World().allies[0].pose.position.y))
-        target = np.array((4.5, 0))
+        target = np.array((-4.5, 0))
 
         target_ball = target - ball
         target_ball = target_ball / np.linalg.norm(target_ball)
