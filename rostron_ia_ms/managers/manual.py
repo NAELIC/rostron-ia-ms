@@ -10,7 +10,7 @@ class Manual(Manager):
     def __init__(self):
         super().__init__('manual')
         self.timer_ = self.create_timer(0.16, self.update)
-        self.strategies = [Wall(0)]
+        self.strategies = [Wall(0,1,2)]
 
     def update(self):
         if not(World().ready()):
