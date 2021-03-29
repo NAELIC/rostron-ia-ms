@@ -32,13 +32,13 @@ class Wall(Strategies):
         msg2.pose.position.x = x
         msg2.pose.position.y = y-0.5
         msg2.pose.orientation = self.yaw_to_quaternion(0.0)
-        self.goTo1.publish(msg2)
+        self.goTo2.publish(msg2)
         msg3 = PoseStamped()
         msg3.header.frame_id = 'map'
         msg3.pose.position.x = x
         msg3.pose.position.y = y+0.5
         msg3.pose.orientation = self.yaw_to_quaternion(0.0)
-        self.goTo1.publish(msg3)
+        self.goTo3.publish(msg3)
 
 
 
