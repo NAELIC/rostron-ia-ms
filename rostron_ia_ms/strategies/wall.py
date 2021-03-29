@@ -11,7 +11,13 @@ class Wall(Strategies):
     def __init__(self, robot_id):
         super().__init__()
         self.goTo = World().node_.create_publisher(
-            PoseStamped, 'robot_%d/goal_pose' % robot_id, 1)
+            PoseStamped, 'robot_%d/goal_pose' % robot_id[0], 1)
+                self.goTo = World().node_.create_publisher(
+            PoseStamped, 'robot_%d/goal_pose' % robot_id[1], 1)
+                    self.goTo = World().node_.create_publisher(
+            PoseStamped, 'robot_%d/goal_pose' % robot_id[2], 1)
+    
+        
 
     def order_robot(self, x, y, theta):
         msg = PoseStamped()
@@ -47,6 +53,8 @@ class Wall(Strategies):
         print(orientation)
 
         self.order_robot(position[0], position[1], orientation)
+        self.order_robot(position[0], position[1]-0.5, orientation)
+        self.order_robot(position[0], position[1]+0.5, orientation)
 
         return False
 
