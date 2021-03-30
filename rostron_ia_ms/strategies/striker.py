@@ -5,7 +5,7 @@ from rostron_ia_ms.utils.world import World
 from rostron_interfaces.msg import Hardware
 
 import math
-
+import time 
 
 class Striker(Strategies):
     state_ = 0
@@ -21,6 +21,7 @@ class Striker(Strategies):
         msg = PoseStamped()
         msg.header.frame_id = 'map'
         if World().on_positive_half:
+            print('change')
             msg.pose.position.x = -x
             msg.pose.position.y = -y
             msg.pose.orientation = self.yaw_to_quaternion(
@@ -45,11 +46,11 @@ class Striker(Strategies):
             (World().allies[0].pose.position.x, World().allies[0].pose.position.y))
         goal_ennemy = np.array((4.5, 0))
 
-        goal_ball = ball - goal_ennemy
+        goal_ball = goal_ennemy - ball 
 
         goal_ball = goal_ball / np.linalg.norm(goal_ball)
         orientation = math.atan2(-goal_ball[1], -goal_ball[0])
-        target = [ball[0] - goal_ball[0], ball[1] - goal_ball[1]]
+        target = [ball[0] - 0.7 * goal_ball[0], ball[1] - 0.7 * goal_ball[1]]
         
         if self.state_ == 0:
             self.order_robot(target[0], target[1], orientation)
@@ -60,11 +61,19 @@ class Striker(Strategies):
 
             dist = np.sqrt(x + y)
             if dist - 0.5 < 0:
-                print('pass')
+                World().node_.get_logger().info('pass')
                 self.state_ = self.state_ + 1
-        else:
+        elif self.state_ == 2:
             self.publish_kick(Hardware.FLAT_KICK, 1.0, 750.0)
-            self.order_robot(ball[0] + 1.5 * goal_ball[0],
-                             ball[1] + 1.5 * goal_ball[1], orientation)
+            self.order_robot(ball[0] + 0.5,
+                             ball[1], orientation)
+            self.state_ = self.state_ + 1
+            self.time = World().node_.get_clock().now().to_msg().sec
+        else :
+            World().node_.get_logger().info('finish')
+            t =  World().node_.get_clock().now().to_msg().sec - self.time
+            World().node_.get_logger().info('%f' % t)
+            if t > 2:
+                self.state_ = 0
 
         return False
