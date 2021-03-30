@@ -69,7 +69,7 @@ class Striker(Strategies):
             if dist - 0.03 < 0:
                 World().node_.get_logger().info('pass')
                 self.state_ = self.state_ + 1
-            elif t > 3:
+            elif t > 5:
                 self.order_robot(target[0], target[1], orientation)
                 self.time = World().node_.get_clock().now().to_msg().sec
 
@@ -77,8 +77,8 @@ class Striker(Strategies):
 
         elif self.state_ == 2:
             self.publish_kick(Hardware.FLAT_KICK, 1.0, 750.0)
-            self.order_robot(ball[0] + 0.2 * goal_ball[0],
-                             ball[1] + 0.2 * goal_ball[1], orientation)
+            self.order_robot(ball[0] + 0.1 * goal_ball[0],
+                             ball[1] + 0.1 * goal_ball[1], orientation)
             self.state_ = self.state_ + 1
             self.time = World().node_.get_clock().now().to_msg().sec
         else :
