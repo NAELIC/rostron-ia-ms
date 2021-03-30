@@ -12,10 +12,12 @@ class Striker(Strategies):
 
     def __init__(self, robot_id):
         super().__init__()
+        self.robot_id = robot_id
         self.goTo = World().node_.create_publisher(
             PoseStamped, 'robot_%d/goal_pose' % robot_id, 1)
         self.hardware = World().node_.create_publisher(
             Hardware, 'robot_%d/hardware_order' % robot_id, 1)
+        
 
     def order_robot(self, x, y, theta):
         msg = PoseStamped()
@@ -43,30 +45,40 @@ class Striker(Strategies):
     def update(self):
         ball = np.array((World().ball.position.x, World().ball.position.y))
         robot = np.array(
-            (World().allies[0].pose.position.x, World().allies[0].pose.position.y))
+            (World().allies[self.robot_id].pose.position.x, World().allies[self.robot_id].pose.position.y))
         goal_ennemy = np.array((4.5, 0))
 
-        goal_ball = goal_ennemy - ball 
+        goal_ball =  goal_ennemy - ball 
 
         goal_ball = goal_ball / np.linalg.norm(goal_ball)
         orientation = math.atan2(-goal_ball[1], -goal_ball[0])
-        target = [ball[0] - 0.7 * goal_ball[0], ball[1] - 0.7 * goal_ball[1]]
-        
+        target = [ball[0] - 0.5 * goal_ball[0], ball[1] - 0.5 * goal_ball[1]]
+        # World().node_.get_logger().info('pass')
+
         if self.state_ == 0:
             self.order_robot(target[0], target[1], orientation)
-            self.state_ = self.state_ + 1
+            self.state_ += 1
+            self.time = World().node_.get_clock().now().to_msg().sec
         elif self.state_ == 1:
             x = (target[0] - robot[0]) ** 2
             y = (target[1] - robot[1]) ** 2
 
             dist = np.sqrt(x + y)
-            if dist - 0.5 < 0:
+            t =  World().node_.get_clock().now().to_msg().sec - self.time
+
+            if dist - 0.03 < 0:
                 World().node_.get_logger().info('pass')
                 self.state_ = self.state_ + 1
+            elif t > 3:
+                self.order_robot(target[0], target[1], orientation)
+                self.time = World().node_.get_clock().now().to_msg().sec
+
+
+
         elif self.state_ == 2:
             self.publish_kick(Hardware.FLAT_KICK, 1.0, 750.0)
-            self.order_robot(ball[0] + 0.5,
-                             ball[1], orientation)
+            self.order_robot(ball[0] + 0.2 * goal_ball[0],
+                             ball[1] + 0.2 * goal_ball[1], orientation)
             self.state_ = self.state_ + 1
             self.time = World().node_.get_clock().now().to_msg().sec
         else :

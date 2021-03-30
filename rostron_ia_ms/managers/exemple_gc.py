@@ -4,12 +4,14 @@ from .game_state import GameStateManager, State
 from std_msgs.msg import Bool
 
 from rostron_ia_ms.strategies.go_to import GoTo
+from rostron_ia_ms.strategies.striker import Striker
 
 
 class ExempleGC(GameStateManager):
 
     strategies = []
-    
+    wait_ball_move = False
+
     def __init__(self):
         super().__init__('exemple')
         self.halt_pub_ = self.create_publisher(Bool, 'halt', 10)
@@ -76,13 +78,14 @@ class ExempleGC(GameStateManager):
     def start_kickoff_opponent(self):
         self.get_logger().info('[START] KICKOFF OPPONENT')
         self.strategies = [
-            GoTo(0, -3.80, 0, 0),
-            GoTo(1, -0.7, 0, 0),
+            GoTo(0, -3.80, 0.0, 0),
+            GoTo(1, -0.7, 0.0, 0),
             GoTo(2, -1.5, 1.12, 0),
             GoTo(3, -1.5, -1.12, 0),
             GoTo(4, -2.5, 0.7, 0),
             GoTo(5, -2.5, -0.7, 0)
         ]
+        self.wait_ball_move = True
         pass
 
     def kickoff_opponent(self):
@@ -102,20 +105,20 @@ class ExempleGC(GameStateManager):
     def start_kickoff_ally(self):
         self.get_logger().info('[START] KICKOFF ALLY')
         self.strategies = [
-            GoTo(0, -3.80, 0, 0),
-            GoTo(1, -0.3, 0, 0),
-            GoTo(2, -1.5, 1.12, 0),
-            GoTo(3, -1.5, -1.12, 0),
-            GoTo(4, -2.5, 0.7, 0),
-            GoTo(5, -2.5, -0.7, 0)
+            GoTo(0, -3.80, 0.0, 0.0),
+            GoTo(1, -0.3, 0.0, 0.0),
+            GoTo(2, -1.5, 1.12, 0.0),
+            GoTo(3, -1.5, -1.12, 0.0),
+            GoTo(4, -2.5, 0.7, 0.0),
+            GoTo(5, -2.5, -0.7, 0.0)
         ]
-        pass
+
+        self.wait_ball_move = False
 
     def kickoff_ally(self):
         self.get_logger().info('[CONTINUE] KICKOFF ALLY')
         for strategie in self.strategies:
             strategie.update()
-        pass
 
     def stop_kickoff_ally(self):
         self.get_logger().info('[STOP] KICKOFF ALLY')
@@ -163,13 +166,39 @@ class ExempleGC(GameStateManager):
 
     def start_normal_start(self):
         self.get_logger().info('[START] NORMAL START')
+        if self.wait_ball_move:
+            self.get_logger().info('WAIT BALL MOVE')
+
+            self.strategies = [
+                GoTo(0, -3.80, 0.0, 0),
+                GoTo(1, -0.7, 0.0, 0),
+                GoTo(2, -1.5, 1.12, 0),
+                GoTo(3, -1.5, -1.12, 0),
+                GoTo(4, -2.5, 0.7, 0),
+                GoTo(5, -2.5, -0.7, 0)
+            ]
+        else:
+            self.get_logger().info('GO STRIKER')
+            self.strategies = [
+                GoTo(0, -3.80, 0.0, 0.0),
+                Striker(1),
+                GoTo(2, -1.5, 1.12, 0.0),
+                GoTo(3, -1.5, -1.12, 0.0),
+                GoTo(4, -2.5, 0.7, 0.0),
+                GoTo(5, -2.5, -0.7, 0.0)
+            ]
         pass
 
     def normal_start(self):
         self.get_logger().info('[CONTINUE] NORMAL START')
-        for strategie in self.strategies:
-            strategie.update()
-        pass
+        if self.wait_ball_move:
+            for strategie in self.strategies:
+                strategie.update()
+            # TODO Ball moving ?
+        else:
+            for strategie in self.strategies:
+                strategie.update()
+            # Ball moving ?
 
     def stop_normal_start(self):
         self.get_logger().info('[STOP] NORMAL START')

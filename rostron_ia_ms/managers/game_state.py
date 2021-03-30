@@ -116,7 +116,7 @@ class GameStateManager(Manager, ABC):
                 self.internal_state_ = State.KICKOFF_OPPONENT
                 self.start_kickoff_opponent()
             else:
-                self.internal_state_ == State.KICKOFF_ALLY
+                self.internal_state_ = State.KICKOFF_ALLY
                 self.start_kickoff_ally()
         elif World().gc.command == Command.PREPARE_KICKOFF_YELLOW.value:
             self.get_logger().info('State changed : PREPARE_KICKOFF_YELLOW')
@@ -124,7 +124,7 @@ class GameStateManager(Manager, ABC):
                 self.internal_state_ = State.KICKOFF_ALLY
                 self.start_kickoff_ally()
             else:
-                self.internal_state_ == State.KICKOFF_OPPONENT
+                self.internal_state_ = State.KICKOFF_OPPONENT
                 self.start_kickoff_opponent()
         elif World().gc.command == Command.NORMAL_START.value:
             self.get_logger().info('State changed : NORMAL_START')
