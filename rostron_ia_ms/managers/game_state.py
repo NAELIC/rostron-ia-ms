@@ -47,7 +47,7 @@ class GameStateManager(Manager, ABC):
 
     def __init__(self, name: str):
         super().__init__(name)
-        self.start_halt()
+        # self.start_halt()
 
     def state_change(self) -> bool:
         '''

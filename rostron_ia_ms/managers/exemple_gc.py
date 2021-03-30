@@ -9,11 +9,11 @@ from rostron_ia_ms.strategies.go_to import GoTo
 class ExempleGC(GameStateManager):
 
     strategies = []
-
+    
     def __init__(self):
         super().__init__('exemple')
+        self.halt_pub_ = self.create_publisher(Bool, 'halt', 10)
         self.timer_ = self.create_timer(0.16, self.update)
-        self.halt = self.create_publisher(Bool, 'halt', 1)
 
     def update(self):
         super().update()
@@ -26,14 +26,14 @@ class ExempleGC(GameStateManager):
         self.get_logger().info('[START] HALT')
         msg = Bool()
         msg.data = True
-        self.halt.publish(msg)
+        self.halt_pub_.publish(msg)
         pass
 
     def halt(self):
         self.get_logger().info('[CONTINUE] HALT')
         msg = Bool()
         msg.data = True
-        self.halt.publish(msg)
+        self.halt_pub_.publish(msg)
         pass
 
     def stop_halt(self):
@@ -41,7 +41,7 @@ class ExempleGC(GameStateManager):
         msg = Bool()
         msg.data = False
         for _ in range(5):
-            self.halt.publish(msg)
+            self.halt_pub_.publish(msg)
         pass
 
     ################################################
@@ -51,12 +51,12 @@ class ExempleGC(GameStateManager):
     def start_stop(self):
         self.get_logger().info('[START] STOP')
         self.strategies = [
-            GoTo(0, -3.80, 0, 0),
-            GoTo(1, -0.7, 0, 0),
-            GoTo(2, -1.5, 1.12, 0),
-            GoTo(3, -1.5, -1.12, 0),
-            GoTo(4, -2.5, 0.7, 0),
-            GoTo(5, -2.5, -0.7, 0)
+            GoTo(0, -3.80, 0.0, 0.0),
+            GoTo(1, -0.7, 0.0, 0.0),
+            GoTo(2, -1.5, 1.12, 0.0),
+            GoTo(3, -1.5, -1.12, 0.0),
+            GoTo(4, -2.5, 0.7, 0.0),
+            GoTo(5, -2.5, -0.7, 0.0)
         ]
         pass
 
