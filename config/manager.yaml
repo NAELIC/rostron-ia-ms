@@ -1,0 +1,21 @@
+yellow:
+  manual_manager:
+    ros__parameters:
+      yellow: True
+      team: 'yellow'
+
+  exemple_manager:
+    ros__parameters:
+      yellow: True
+      team: 'yellow'
+
+blue:
+  manual_manager:
+    ros__parameters:
+      yellow: False
+      team: 'blue'
+  
+  exemple_manager:
+    ros__parameters:
+      yellow: False
+      team: 'blue'
