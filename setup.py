@@ -24,7 +24,10 @@ setup(
         'console_scripts': [
             'dummy = rostron_ia_ms.managers.dummy:main',
             'manual = rostron_ia_ms.managers.manual:main',
-            'exemple = rostron_ia_ms.managers.exemple_gc:main'
+            'goal = rostron_ia_ms.strategies.goalkeeper:main',
+            'exemple = rostron_ia_ms.managers.exemple_gc:main',
+            'move_to_client = rostron_ia_ms.strategies.move_to_client:main'
+
         ],
     },
 )

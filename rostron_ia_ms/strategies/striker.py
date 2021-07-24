@@ -23,7 +23,6 @@ class Striker(Node):
         self.distance_ball = 0.2
         World().init(self)
         
-
     def update_pose_ball(self):
         """Update the values ​​of the ball position"""
         self.ball_position = (World().ball.position.x,World().ball.position.y)
@@ -50,7 +49,7 @@ class Striker(Node):
         vector_angle= (pose[0]-ball_position[0],
                         pose[1]-ball_position[1])
         vector_axis= (1,0) # right vector
-        theta = R_Math().angle_between(vector_axis, vector_angle)
+        theta = R_Math.angle_between(vector_axis, vector_angle)
         robot.move_to(self.first_pose(ball_position,theta),theta)
         self.distance_ball=0.1
         robot.move_by([self.first_pose(ball_position, theta),self.ball_position,
