@@ -1,10 +1,11 @@
 from rclpy.node import Node
 from rostron_utils.world import World
+from rostron_utils.angle_radian import AngleRadian
 import math
 from math import sin, cos, pi
 from rostron_interfaces.action import MoveTo
 
-from rostron_navigation.primitive.move_to import MoveToStrategie, R_Math
+from rostron_navigation.primitive.move_to import MoveToStrategie
 from rclpy.action.server import ServerGoalHandle
 
 class Striker(Node):
@@ -49,7 +50,7 @@ class Striker(Node):
         vector_angle= (pose[0]-ball_position[0],
                         pose[1]-ball_position[1])
         vector_axis= (1,0) # right vector
-        theta = R_Math.angle_between(vector_axis, vector_angle)
+        theta = AngleRadian.angle_between(vector_axis, vector_angle)
         robot.move_to(self.first_pose(ball_position,theta),theta)
         self.distance_ball=0.1
         robot.move_by([self.first_pose(ball_position, theta),self.ball_position,
