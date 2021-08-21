@@ -22,12 +22,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'dummy = rostron_ia_ms.managers.dummy:main',
-            'manual = rostron_ia_ms.managers.manual:main',
-            'goalkeeper = rostron_ia_ms.strategies.goalkeeper:main',
-            'exemple = rostron_ia_ms.managers.exemple_gc:main',
-            'move_to_client = rostron_ia_ms.strategies.move_to_client:main'
-
+            'main = rostron_ia_ms.main:main'
         ],
     },
 )
