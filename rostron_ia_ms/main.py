@@ -1,4 +1,5 @@
 from rostron_ia_ms.strategies.go_to import GoTo
+from rostron_ia_ms.strategies.control import Control
 import rclpy
 from rclpy.node import Node
 from .utils.task import Task
@@ -20,8 +21,8 @@ class IANode(Node):
 
         World().init(self, self.is_yellow)
 
-        self.tasks.append(GoTo(0, 0.0, 0.0, 0.0))
-
+        # self.tasks.append(GoTo(0, 0.0, 0.0, 0.0))
+        self.tasks.append(Control(0, 0, 0, 3.14))
         # self.create_service() Manager
         # self.create_service() Stragies
 
