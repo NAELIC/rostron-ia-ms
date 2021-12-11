@@ -1,3 +1,4 @@
+# from rostron_ia_ms.strategies.striker import Striker
 from rostron_ia_ms.strategies.go_to import GoTo
 from rostron_ia_ms.strategies.control import Control
 import rclpy
@@ -21,15 +22,15 @@ class IANode(Node):
 
         World().init(self, self.is_yellow)
 
-        # self.tasks.append(GoTo(0, 0.0, 0.0, 0.0))
-        self.tasks.append(Control(0, 0, 0, 3.14))
+        self.tasks.append(GoTo(0, 0.0, 0.0, 0.0))
+        # self.tasks.append(Control(0, 0, 0, 3.14))
+        # self.tasks.append(Striker(0))
         # self.create_service() Manager
-        # self.create_service() Stragies
+        # self.create_service() Strategies
 
     def update(self):
         for t in self.tasks:
             t.update()
-
 
 def main():
     rclpy.init()
