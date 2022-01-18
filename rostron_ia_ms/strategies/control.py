@@ -28,7 +28,6 @@ class Control(Strategies):
         command.velocity.angular.z = 0.0
         commands.commands.append(command)
         self.publisher_.publish(commands)
-
         
     def update(self):
         robot : Robot = World().allies[self.id]

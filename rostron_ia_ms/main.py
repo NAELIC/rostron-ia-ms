@@ -8,7 +8,6 @@ from .utils.task import Task
 # TODO : Move with the new rostron_utils
 from .utils.world import World
 
-
 class IANode(Node):
     tasks = []
 
@@ -22,7 +21,10 @@ class IANode(Node):
 
         World().init(self, self.is_yellow)
 
-        self.tasks.append(GoTo(0, 0.0, 0.0, 0.0))
+        thisRobot = World().allies[0]
+
+        # print(thisRobot.pose.position.x)
+        self.tasks.append(GoTo(0, thisRobot.pose.position.x-0.5, 0.0, 0.0))
         # self.tasks.append(Control(0, 0, 0, 3.14))
         # self.tasks.append(Striker(0))
         # self.create_service() Manager
