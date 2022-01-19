@@ -5,7 +5,6 @@ from rostron_interfaces.action import Behavior
 
 import json
 
-
 def create_move_to(x, y, theta):
     msg = Behavior.Goal()
 
@@ -13,7 +12,6 @@ def create_move_to(x, y, theta):
     msg.params = json.dumps({"x": x, "y": y, "theta": theta})
 
     return msg
-
 
 class GoTo(Strategies):
     def __init__(self, id: float, x: float, y: float, theta: float) -> None:

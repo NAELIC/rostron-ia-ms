@@ -16,15 +16,14 @@ class IANode(Node):
         self.create_timer(0.16, self.update)
 
         self.declare_parameter('yellow', True)
-        self.is_yellow = self.get_parameter(
-            'yellow').get_parameter_value().bool_value
+        self.is_yellow = self.get_parameter('yellow').get_parameter_value().bool_value
 
         World().init(self, self.is_yellow)
-
-        thisRobot = World().allies[0]
-
         # print(thisRobot.pose.position.x)
-        self.tasks.append(GoTo(0, thisRobot.pose.position.x-0.5, 0.0, 0.0))
+        # thisRobot = World().allies[0]
+
+
+        # self.tasks.append(GoTo(0, thisRobot.pose.position.x-0.5, 0.0, 0.0))
         # self.tasks.append(Control(0, 0, 0, 3.14))
         # self.tasks.append(Striker(0))
         # self.create_service() Manager
